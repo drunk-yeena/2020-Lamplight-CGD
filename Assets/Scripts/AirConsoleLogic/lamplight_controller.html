@@ -1,0 +1,225 @@
+<html>
+<head>
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <script type="text/javascript" src="https://www.airconsole.com/api/airconsole-1.7.0.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/AirConsole/airconsole-controls/joystick/joystick.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/AirConsole/airconsole-controls/rate-limiter/rate-limiter.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/AirConsole/airconsole-controls/button/button.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/AirConsole/airconsole-controls/button/button.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/AirConsole/airconsole-controls/joystick/joystick.css" />
+    <style type="text/css">
+        body {
+            -ms-user-select: none;
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        /* Created by Damon*/
+        .example-container {
+            position: relative;
+            background-color: #3b3b3b;
+            text-align: center;
+            font-family: sans-serif;
+            display: inline-block;
+            width: 100%;
+            height: 100%;
+            max-width: 720px;
+            max-height: 360px;
+        }
+
+        /* You need to explicitly position your joystick */
+        #joystick_left {
+            position: absolute;
+            width: 50%;
+            height: 90%;
+            top: 5%;
+            left: 5%;
+        }
+
+        /* Button Overwrites*/
+        .button-300-150 {
+            position: absolute;
+            height: 50%;
+            width: 40%;
+            right: 0px;
+        }
+
+        .button-80 {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            left: 50%;
+            margin-left: -25%;
+            font-size: 10px;
+        }
+
+        .button-80 .button-text{
+            margin-top: -0.6em;
+        }
+
+
+      /* New Buttons */
+        #usebutton1 {
+            bottom: 0%;
+            background-position: 50% 0%;
+        }
+        .usebutton1text {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            width: 100%;
+            padding-bottom: 50%;
+            height: 0%
+        }
+        #usebutton2{
+            top: 0%;
+            background-position: 50% 100%;
+        }
+        .usebutton2text {
+            position: absolute;
+            left: 0px;
+            bottom: 0px;
+            width: 100%;
+            padding-bottom: 50%;
+            height: 0%
+        }
+        #disconnectbutton {
+            bottom:0%;
+        }
+        /* Groups */
+        .middle-group {
+            position:absolute;
+            height:50%;
+            width:20%;
+            left: 45%;
+            top: 68%;
+        }
+        .middle-group-square{
+            position: absolute;
+            height: 0%;
+            width: 100%;
+            padding-bottom: 100%;
+            left: 0px;
+            top: 0px;
+        }
+
+    </style>
+    <script type="text/javascript">
+
+        function App() {
+
+            /* JavaScript / Functionality. Add functions and evens here */
+            /*
+             * Here we are adding support for mouse events manually.
+             * --> WE STRONGLY ENCOURAGE YOU TO USE THE AIRCONSOLE CONTROLS LIBRARY
+             * WHICH IS EVEN BETTER (BUT WE DONT WANT TO BLOAT THE CODE HERE).
+             * https://github.com/AirConsole/airconsole-controls/
+             *
+             * DO NOT USE ONCLICK HANDLERS.
+             * THEY ADD A 200MS DELAY!
+             */
+            if (!("ontouchstart" in document.createElement("div"))) {
+                var elements = document.getElementsByTagName("*");
+                for (var i = 0; i < elements.length; ++i) {
+                    var element = elements[i];
+                    var ontouchstart = element.getAttribute("ontouchstart");
+                    if (ontouchstart) {
+                        element.setAttribute("onmousedown", ontouchstart);
+                    }
+                    var ontouchend = element.getAttribute("ontouchend");
+                    if (ontouchend) {
+                        element.setAttribute("onmouseup", ontouchend);
+                    }
+                }
+            }
+        }
+
+            
+            }
+
+    </script>
+</head>
+<body>
+    <div class="example-container">
+        <div id="joystick_left" class="joystick">
+            <div class="joystick-relative">
+                <div class="joystick-relative-stick"></div>
+            </div>
+        </div>
+        <div class="middle-group">
+            <div class="middle-group-square">
+                <div id="disconnectbutton" class="button-80">
+                    <div class="button-text">X</div>
+                </div>
+            </div>
+        </div>
+        <div id="usebutton1" class="button-300-150">
+            <div class="usebutton1text">
+                <div class="button-text">A</div>
+            </div>
+        </div>
+        <div id="usebutton2" class="button-300-150">
+            <div class="usebutton2text">
+                <div class="button-text">B</div>
+            </div>
+        </div>
+
+        </div>
+    <script type="text/javascript">
+        var airconsole = new AirConsole({orientation: AirConsole.ORIENTATION_LANDSCAPE});
+        var rateLimiter = new RateLimiter(airconsole);
+        var joystick_left = new Joystick("joystick_left", {
+            "touchstart": function () {
+                rateLimiter.message(AirConsole.SCREEN, {
+                    "joystick_left": {
+                        touch: true
+                    }
+                });
+            },
+            "touchmove": function (position) {
+                rateLimiter.message(AirConsole.SCREEN, {
+                    "joystick_left": {
+                        position: position
+                    }
+                });
+            },
+            "touchend": function (had_direction) {
+                rateLimiter.message(AirConsole.SCREEN, {
+                    "joystick_left": {
+                        touch: false
+                    }
+                });
+            },
+            absolute_start: false,
+            min_delta: 0.25
+        });
+        var disconnectbutton = new Button("disconnectbutton", {
+            "down": function () {
+                rateLimiter.message(AirConsole.SCREEN, {
+                    "disconnect_button": {
+                        disconnect: true
+                    }
+                });
+            }
+        });
+        var usebutton1 = new Button("usebutton1", {
+            "down": function () {
+                rateLimiter.message(AirConsole.SCREEN, {
+                    "usebutton1": {
+                        use: true
+                    }
+                });
+            }
+        });
+        var usebutton2 = new Button("usebutton2", {
+            "down": function () {
+                rateLimiter.message(AirConsole.SCREEN, {
+                    "usebutton2": {
+                        use: true
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
